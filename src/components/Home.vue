@@ -6,10 +6,9 @@
     </div>
     
     <div class="row">
-      <div class="col s3 m3"
-        v-for="(pkmn, index) in pkmnData"
-        :key="index+1"
-        >
+      <div class="col s3 m3" 
+        v-for="(pkmn, index) in pkmnData" 
+        :key="index+1">
         <div class="card">
           <div class="card-content">
             <span class="card-title">{{ pkmn.name | capitalize }}</span>
@@ -37,7 +36,7 @@
         Next
       </a>
     </div>
-  
+
   </div>
 </template>
 
