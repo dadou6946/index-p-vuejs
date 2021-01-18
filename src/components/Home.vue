@@ -14,7 +14,7 @@
             <span class="card-title">{{ pkmn.name | capitalize }}</span>
           </div>
           <div class="card-action">
-            <router-link :to="'/detail/'+(index+1)"
+            <router-link :to="'/detail/'+(index+indexChange+1)"
               class="waves-effect indigo lighten-1 white-text waves-light btn">
               More
             </router-link>
@@ -52,15 +52,22 @@ export default {
       pkmnData: [],
       idLow: 0,
       idHight: 0,
+      indexChange: 0,
     }
   },
   methods : {
     changeList(type) {
       console.log(type)
       if (type == 'next')
+      {
         this.urlCurrent = this.urlNext
+        this.indexChange+= 30 
+      }
       else
+      {
         this.urlCurrent = this.urlPrevious
+        this.indexChange-= 30 
+      }
       axios
       .get(this.urlCurrent)
       .then(response => {
