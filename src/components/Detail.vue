@@ -41,6 +41,10 @@ export default {
     return {
       url: 'https://pokeapi.co/api/v2/pokemon/',
       pkmnData: null,
+      evolutions: {
+        evolutions1: [],
+        evolutions2: []
+      }
     }
   },
   mounted () {
@@ -48,7 +52,58 @@ export default {
       .get(this.url + this.$route.params.id)
       .then(response => {
         this.pkmnData = response.data
+        console.log('infos sur le pkmn')
         console.log(this.pkmnData)
+
+        var speciesUrl = this.pkmnData.species.url
+        axios
+          .get(speciesUrl)
+          .then(response => {
+            // !!! Voir ici pour les texts en fr !!!
+            console.log("espece : ")
+            console.log(response.data)
+            
+            var evolutionUrl = response.data.evolution_chain.url
+            axios
+              .get(evolutionUrl)
+              .then(response => {
+                // !!! Voir ici pour les évolutions !!!
+                console.log("evolutions : ")
+                console.log(response.data)
+                // évolution niveau 1
+                if(response.data.chain.evolves_to.length != 0)
+                {
+                  var evo1 = []
+                  response.data.chain.evolves_to.forEach((evolution)=>{
+                    var ev = {}
+                    ev.name = evolution.species.name 
+                    ev.trigger = evolution.evolution_details[0].trigger.name 
+                    ev.level = evolution.evolution_details[0].min_level 
+                    // console.log("ev :")
+                    // console.log(ev)
+                    evo1.push(ev)
+                  })
+                  this.evolutions.evolutions1 = evo1
+                  // console.log("evo1 :")
+                  // console.log(evo1)
+                  // évolution niveau 2
+                  if(response.data.chain.evolves_to[0].evolves_to.length != 0)
+                  {
+                    var evo2 = {}
+                    evo2.name = response.data.chain.evolves_to[0].evolves_to[0].species.name 
+                    evo2.trigger = response.data.chain.evolves_to[0].evolves_to[0].evolution_details[0].trigger.name 
+                    evo2.level = response.data.chain.evolves_to[0].evolves_to[0].evolution_details[0].min_level 
+                    // console.log("evo2 :")
+                    // console.log(evo2)
+                    this.evolutions.evolutions2 = evo2
+
+                  }
+                }
+                
+          })
+
+
+          })
       })
   }
 }
