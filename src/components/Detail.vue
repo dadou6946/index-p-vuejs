@@ -2,33 +2,49 @@
   <div class="home" v-if="pkmnData !=null">
 
     <div class="row">
-      <h2>{{ pkmnData.name | capitalize }}</h2>
-      <p>#{{ pkmnData.id }}</p>
-      <p>Height : {{ pkmnData.height*10 }} cm</p>
-      <p>Weight : {{ pkmnData.weight*0.1 }} kg</p>
-      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sit ab perspiciatis consectetur deleniti quia! Rem ducimus aspernatur similique, provident quidem, accusantium ipsa, ullam vitae laboriosam modi quos veniam atque laborum.</p>
-    </div>
 
-    <div class="row">
-      <img :src="pkmnData.sprites.front_default" alt="">
-      <img :src="pkmnData.sprites.back_default" alt="">
-      <img :src="pkmnData.sprites.other['official-artwork'].front_default"
-        style="height: 150px;" alt="">
-      <img :src="pkmnData.sprites.front_shiny" alt="">
-      <img :src="pkmnData.sprites.back_shiny" alt="">
-      <img :src="pkmnData.sprites.other['dream_world'].front_default"
-        style="height: 150px;" alt="">
-    </div>
-  
-    <div class="row">
-      <p v-for="type in pkmnData.types"
-        :key="type.slot">
-        {{ type.type.name | capitalize }}
-      </p>
+      <div class="col m6">
+        <h4 id="pkmn-id">#{{ pkmnData.id }}</h4>
+        <h3 id="pkmn-name">{{ pkmnData.name | capitalize }}</h3>
+        <p id="pkmn-height">Height : {{ pkmnData.height*10 }} cm</p>
+        <p id="pkmn-weight">Weight : {{ pkmnData.weight*0.1 }} kg</p>
+        <div id="pkmn-types">
+          <h5>Types :</h5>
+          <span v-for="type in pkmnData.types"
+            :key="type.slot"
+            :class="'type-'+type.type.name">
+            {{ type.type.name | capitalize }}
+          </span>
+        </div>
+        <div id="pkmn-texts">
+          <h5>Pokedex texts :</h5>
+        </div>
+        <div id="pkmn-abilities">
+          <h5>Abilities :</h5>
+        </div>
+        <div id="pkmn-attacks">
+          <h5>Attacks :</h5>
+        </div>
+      </div>
+
+      <div class="col m6">
+        <div class="row" id="pkmn-image-container">
+          <img class="pkmn-image" :src="pkmnData.sprites.other['official-artwork'].front_default"
+            style="height: 150px;" alt="">
+          <img class="pkmn-image" :src="pkmnData.sprites.other['dream_world'].front_default"
+            style="height: 150px;" alt="">
+        </div>
+        <div class="row" id="pkmn-sprite-container">
+          <img class="pkmn-sprite" :src="pkmnData.sprites.back_default" alt="">
+          <img class="pkmn-sprite" :src="pkmnData.sprites.front_default" alt="">
+          <img class="pkmn-sprite" :src="pkmnData.sprites.front_shiny" alt="">
+          <img class="pkmn-sprite" :src="pkmnData.sprites.back_shiny" alt="">
+        </div>
+      </div>
     </div>
     
     <div class="row">
-      <h3>Evolutions</h3>
+      <h5>Evolutions</h5>
     </div>
   </div>
 </template>
@@ -129,5 +145,9 @@ li {
 }
 a {
   color: #42b983;
+}
+
+div #pkmn-image-container{
+  margin-top: 150px;
 }
 </style>
