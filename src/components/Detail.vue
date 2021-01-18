@@ -41,6 +41,7 @@ export default {
     return {
       url: 'https://pokeapi.co/api/v2/pokemon/',
       pkmnData: null,
+      texts: [],
       evolutions: {
         evolutions1: [],
         evolutions2: []
@@ -62,6 +63,10 @@ export default {
             // !!! Voir ici pour les texts en fr !!!
             console.log("espece : ")
             console.log(response.data)
+            response.data.flavor_text_entries.forEach((textData)=>{
+              if(textData.language.name == "en")
+                this.texts.push(textData)
+            })
             
             var evolutionUrl = response.data.evolution_chain.url
             axios
