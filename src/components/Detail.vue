@@ -4,10 +4,31 @@
     <div class="row">
 
       <div class="col m6">
-        <h4 id="pkmn-id">#{{ pkmnData.id }}</h4>
+
+        <div class="row">
+          <div class="col m4 change-button-content">
+            <button class="btn-floating"
+              :disabled="pkmnData.id==1"
+              @click="redirection(pkmnData.id -1)">
+              <i class="material-icons">keyboard_arrow_left</i>
+            </button>
+          </div>
+          <div class="col m4">
+            <h4 id="pkmn-id">#{{ pkmnData.id }}</h4>
+          </div>
+          <div class="col m4 change-button-content">
+            <button class="btn-floating"
+              :disabled="pkmnData.id==898"
+              @click="redirection(pkmnData.id + 1)">
+              <i class="material-icons">keyboard_arrow_right</i>
+            </button>
+          </div>
+        </div>
+
         <h3 id="pkmn-name">{{ pkmnData.name | capitalize }}</h3>
         <p id="pkmn-height">Height : {{ pkmnData.height*10 }} cm</p>
         <p id="pkmn-weight">Weight : {{ pkmnData.weight*0.1 }} kg</p>
+
         <div id="pkmn-types">
           <h5>Types :</h5>
           <div v-for="type in pkmnData.types"
@@ -16,6 +37,7 @@
             {{ type.type.name | capitalize }}
           </div>
         </div>
+
         <div id="pkmn-abilities">
           <h5>Abilities :</h5>
           <div v-for="(ability, index) in pkmnData.abilities" :key="index">{{ ability.ability.name | capitalize }}</div>
@@ -146,13 +168,14 @@ export default {
       this.recupererDonnes()
     },
     recupererDonnes: function(){
+      // Appel api pour les données du pkmn en cours
       axios
       .get(this.pkmnUrl + this.$route.params.pkmn)
       .then(response => {
         this.pkmnData = response.data
         var speciesUrl = this.pkmnData.species.url
 
-        // Appel api vers les données d'especes
+        // Appel api pour les données d'especes
         axios
           .get(speciesUrl)
           .then(response => {
@@ -164,7 +187,8 @@ export default {
               if(textData.language.name == "en")
                 this.texts.push(textData)
             })
-            
+
+            // Appel api pour les données de chaine d'écolution
             var evolutionUrl = response.data.evolution_chain.url
             axios
               .get(evolutionUrl)
@@ -177,9 +201,6 @@ export default {
                   .then(response =>{
                     this.evolutions.base.image = response.data.sprites.other['dream_world'].front_default
                   })
-                console.log("this.evolutions.base.name :")
-                console.log(this.evolutions.base.name)
-
                 // Récupération des données d'évolution 1
                 if(response.data.chain.evolves_to.length != 0)
                 {
@@ -300,5 +321,9 @@ a {
 
 div #pkmn-image-container{
   margin-top: 150px;
+}
+
+div.change-button-content{
+  padding-top: 20px;
 }
 </style>
