@@ -30,17 +30,24 @@
         <p id="pkmn-weight">Weight : {{ pkmnData.weight*0.1 }} kg</p>
 
         <div id="pkmn-types">
-          <h5>Types :</h5>
+          <h5>Type<span v-if="pkmnData.types.length==2">s</span> :</h5>
           <div v-for="type in pkmnData.types"
             :key="type.slot"
+            class="type-icon" 
             :class="'type-'+type.type.name">
             {{ type.type.name | capitalize }}
           </div>
         </div>
 
         <div id="pkmn-abilities">
-          <h5>Abilities :</h5>
-          <div v-for="(ability, index) in pkmnData.abilities" :key="index">{{ ability.ability.name | capitalize }}</div>
+          <h5>
+            <span v-if="pkmnData.abilities.length==1">Ability</span>
+            <span v-if="pkmnData.abilities.length==2">Abilities</span> :
+          </h5>
+          <div v-for="(ability, index) in pkmnData.abilities" 
+            :key="index">
+            {{ ability.ability.name | capitalize }}
+          </div>
         </div>
         <div id="pkmn-texts">
           <h5>Pokedex texts :</h5>
