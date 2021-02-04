@@ -2,9 +2,10 @@
   <div class="home">
 
     <div class="row">
-      <h1>home</h1>
+      <h1>Pokedex</h1>
     </div>
     
+    <!-- affichage de tuile pour chaque pkmn -->
     <div class="row">
       <div class="col s3 m3" 
         v-for="(pkmn, index) in pkmnData" 
@@ -15,23 +16,24 @@
           </div>
           <div class="card-action">
             <router-link :to="'/detail/'+(index+indexChange+1)"
-              class="waves-effect indigo lighten-1 white-text waves-light btn">
-              More
+              class="waves-effect red white-text waves-light btn">
+              {{ pkmn.name | capitalize }}
             </router-link>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- boutons enregistrements suivants -->
     <div class="row">
       <a @click="changeList('previous')" 
-        class="btn indigo lighten-1 white-text"
+        class="btn red white-text"
         :disabled="urlPrevious==null">
         Previous
       </a>
       <span> {{ idLow }} - {{ idHight }} </span>
       <a @click="changeList('next')" 
-        class="btn indigo lighten-1 white-text"
+        class="btn red white-text"
         :disabled="urlNext==null">
         Next
       </a>
@@ -41,7 +43,9 @@
 </template>
 
 <script>
+
 import axios from 'axios';
+
 export default {
   name: 'Home',
   data () {
@@ -56,8 +60,8 @@ export default {
     }
   },
   methods : {
+    // Méthode pour aller sur les enregistrements suivants/précédents
     changeList(type) {
-      console.log(type)
       if (type == 'next')
       {
         this.urlCurrent = this.urlNext
@@ -92,7 +96,6 @@ export default {
         this.urlNext = response.data.next
         console.log(response.data)
       })
-
   }
 }
 </script>

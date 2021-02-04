@@ -7,7 +7,7 @@
 
         <div class="row">
           <div class="col m4 change-button-content">
-            <button class="btn-floating"
+            <button class="btn-floating red"
               :disabled="pkmnData.id==1"
               @click="redirection(pkmnData.id -1)">
               <i class="material-icons">keyboard_arrow_left</i>
@@ -17,7 +17,7 @@
             <h4 id="pkmn-id">#{{ pkmnData.id }}</h4>
           </div>
           <div class="col m4 change-button-content">
-            <button class="btn-floating"
+            <button class="btn-floating red"
               :disabled="pkmnData.id==898"
               @click="redirection(pkmnData.id + 1)">
               <i class="material-icons">keyboard_arrow_right</i>
@@ -42,7 +42,7 @@
         <div id="pkmn-abilities">
           <h5>
             <span v-if="pkmnData.abilities.length==1">Ability</span>
-            <span v-if="pkmnData.abilities.length==2">Abilities</span> :
+            <span v-if="pkmnData.abilities.length!=1">Abilities</span> :
           </h5>
           <div v-for="(ability, index) in pkmnData.abilities" 
             :key="index">
@@ -89,7 +89,7 @@
                 alt="">
             </div>
             <div class="card-action">
-              <button class="btn" @click="redirection(evolutions.base.name)">{{ evolutions.base.name | capitalize }}</button>
+              <button class="btn red" @click="redirection(evolutions.base.name)">{{ evolutions.base.name | capitalize }}</button>
             </div>
           </div>
         </div>
@@ -113,7 +113,7 @@
               <p v-if="evo1.held_item != null">Held item : {{ evo1.held_item }}</p>
             </div>
             <div class="card-action">
-              <button class="btn" @click="redirection(evo1.name)">{{ evo1.name | capitalize }}</button>
+              <button class="btn red" @click="redirection(evo1.name)">{{ evo1.name | capitalize }}</button>
             </div>
           </div>
         </div>
@@ -137,7 +137,7 @@
               <p v-if="evo2.held_item != null">Held item : {{ evo2.held_item }}</p>
             </div>
             <div class="card-action">
-              <button class="btn" @click="redirection(evo2.name)">{{ evo2.name | capitalize }}</button>
+              <button class="btn red" @click="redirection(evo2.name)">{{ evo2.name | capitalize }}</button>
             </div>
           </div>
         </div>
