@@ -8,11 +8,6 @@ import Detail from '../components/Detail.vue'
 Vue.use(VueRouter)
 
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: Home
-  // },
   {
     path: '/',
     name: 'Home',

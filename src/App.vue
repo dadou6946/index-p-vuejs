@@ -5,9 +5,10 @@
     <div class="container-fluid">
       <nav class="red">
         <div class="nav-wrapper">
-          <router-link to="/" class="brand-logo center">Logo</router-link>
+          <router-link to="/" class="brand-logo right">lien de droite</router-link>
           <ul class="left hide-on-med-and-down">
-            <li><router-link to="/">Home</router-link></li>
+            <li><router-link to="/"><img class="img-logo" :src="'/pokeball.png'"></router-link></li>
+            <li><router-link to="/"><span>Home</span></router-link></li>
             <li><router-link to="">lien</router-link></li>
             <li class="active"><router-link to="">lien2</router-link></li>
           </ul>
@@ -16,7 +17,7 @@
     </div>
 
     <!-- contenu -->
-    <div class="container main-application-container">
+    <div class="container main-application-container" style="min-height: 900px;">
       <router-view/>
     </div>
 
@@ -73,6 +74,20 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+/*polices*/
+div#app {
+  font-family: 'Raleway', sans-serif;
+}
+
+h1,h2,h3 {
+  /*font-family: 'Kaushan Script', cursive;*/
+  font-family: 'Antic Slab', serif;
+}
+
+img.img-logo {
+  height: 64px;
 }
 
 /*espace entre header et contenu*/

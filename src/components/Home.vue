@@ -11,9 +11,11 @@
         v-for="(pkmn, index) in pkmnData" 
         :key="index+1">
         <div class="card">
-          <div class="card-content">
-            <span class="card-title">{{ pkmn.name | capitalize }}</span>
-          </div>
+          <router-link :to="'/detail/'+(index+indexChange+1)">
+            <img class="pkmn-picture" 
+              :src="pkmn.picture" 
+              :alt="pkmn.name">
+          </router-link>
           <div class="card-action">
             <router-link :to="'/detail/'+(index+indexChange+1)"
               class="waves-effect red white-text waves-light btn">
@@ -31,7 +33,7 @@
         :disabled="urlPrevious==null">
         Previous
       </a>
-      <span> {{ idLow }} - {{ idHight }} </span>
+      <span class="index-count">{{ idLow }} - {{ idHight }}</span>
       <a @click="changeList('next')" 
         class="btn red white-text"
         :disabled="urlNext==null">
@@ -75,12 +77,24 @@ export default {
       axios
       .get(this.urlCurrent)
       .then(response => {
-        console.log(response.data)
+        // mise a jour des données, url et index
         this.pkmnData = response.data.results
         this.urlPrevious = response.data.previous
         this.urlNext = response.data.next
         this.idLow+=30
         this.idHight+=30
+        // recherche des photo avec les nouveaux enregistrements
+        this.getPictures()
+      })
+    },
+    // Recherche des photos pour chaque enregistrement de pkmn dans pkmndata
+    getPictures() {
+      this.pkmnData.forEach((pkmnd, index) => {
+        axios
+          .get(pkmnd.url)
+          .then(response => {
+            this.$set(this.pkmnData[index], 'picture', response.data.sprites.front_default)
+          })
       })
     }
   },
@@ -88,13 +102,15 @@ export default {
     this.urlCurrent = 'https://pokeapi.co/api/v2/pokemon?limit=30',
     this.idLow = 1
     this.idHight = 30
+    // Recherche de la liste des pkmn
     axios
       .get(this.urlCurrent)
       .then(response => {
         this.pkmnData = response.data.results
         this.urlPrevious = response.data.previous
         this.urlNext = response.data.next
-        console.log(response.data)
+        // Recherche des photos
+        this.getPictures()
       })
   }
 }
@@ -115,5 +131,17 @@ li {
 }
 a {
   color: #42b983;
+}
+
+/*image de pkmn*/
+img.pkmn-picture {
+  height: 90px;
+  width: 90px;
+  margin-top: 10px;
+}
+
+/*compte en bas des listes*/
+span.index-count {
+  margin: 15px;
 }
 </style>
