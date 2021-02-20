@@ -3,11 +3,13 @@
 
     <div class="row">
 
+      <!-- COLONNE DE GAUCHE ------------------------------------------------------------>
       <div class="col m6">
 
+        <!-- BOUTONS ET IDENTIFIANTS -->
         <div class="row">
           <div class="col m4 change-button-content">
-            <button class="btn-floating red"
+            <button class="waves-effect waves-light btn-floating red"
               :disabled="pkmnData.id==1"
               @click="redirection(pkmnData.id -1)">
               <i class="material-icons">keyboard_arrow_left</i>
@@ -17,7 +19,7 @@
             <h4 id="pkmn-id">#{{ pkmnData.id }}</h4>
           </div>
           <div class="col m4 change-button-content">
-            <button class="btn-floating red"
+            <button class="waves-effect waves-light btn-floating red"
               :disabled="pkmnData.id==898"
               @click="redirection(pkmnData.id + 1)">
               <i class="material-icons">keyboard_arrow_right</i>
@@ -25,11 +27,15 @@
           </div>
         </div>
 
-        <h3 id="pkmn-name">{{ pkmnData.name | capitalize }}</h3>
-        <p id="pkmn-height">Height : {{ pkmnData.height*10 }} cm</p>
-        <p id="pkmn-weight">Weight : {{ pkmnData.weight*0.1 }} kg</p>
+        <!-- NOM ET DIMENSIONS -->
+        <div class="row">
+          <h3 id="pkmn-name">{{ pkmnData.name | capitalize }}</h3>
+          <p id="pkmn-height">Height : {{ pkmnData.height*10 }} cm</p>
+          <p id="pkmn-weight">Weight : {{ pkmnData.weight*0.1 }} kg</p>
+        </div>
 
-        <div id="pkmn-types">
+        <!-- TYPES -->
+        <div class="row" id="pkmn-types">
           <h5>Type<span v-if="pkmnData.types.length==2">s</span> :</h5>
           <div v-for="type in pkmnData.types"
             :key="type.slot"
@@ -39,7 +45,8 @@
           </div>
         </div>
 
-        <div id="pkmn-abilities">
+        <!-- CAPACITES -->
+        <div class="row" id="pkmn-abilities">
           <h5>
             <span v-if="pkmnData.abilities.length==1">Ability</span>
             <span v-if="pkmnData.abilities.length!=1">Abilities</span> :
@@ -49,15 +56,40 @@
             {{ ability.ability.name | capitalize }}
           </div>
         </div>
-        <div id="pkmn-texts">
-          <h5>Pokedex texts :</h5>
+
+        <!-- TEXTES DE PKMN -->
+        <div class="row" id="pkmn-texts">
+          <div class="col m-4 offset-m4">
+            <h5>Pokedex texts</h5>
+          </div>
+          <div class="col m4">
+            <a class="btn-floating btn waves-effect waves-light red" 
+                @click="manageText()">
+              <i class="material-icons">add</i>
+            </a>
+          </div>
+          <div class="pkmn-text-container col m10 offset-m1" v-show="showTextsButton" style="margin-top: 40px;">
+            <button class="pkmn-text-button btn waves-effect waves-light "
+              @click="changeCurrentText(text)" 
+              v-for="(text,index) in texts"
+              style="margin: 2px;" 
+              :key="index"
+              :class="'button-' + text.version.name">
+              {{ text.version.name }}
+            </button>
+          </div>
         </div>
+
+        <!-- ATTAQUES -->
         <div id="pkmn-attacks">
           <h5>Attacks :</h5>
         </div>
       </div>
 
+      <!-- COLONNE DE DROITE ------------------------------------------------------------>
       <div class="col m6">
+        
+        <!-- PHOTOS -->
         <div class="row" id="pkmn-image-container">
           <img class="pkmn-image" :src="pkmnData.sprites.other['official-artwork'].front_default"
             style="height: 150px;" alt="">
@@ -71,6 +103,20 @@
           <img class="pkmn-sprite" :src="pkmnData.sprites.back_shiny" alt="">
         </div>
 
+        <div class="row images-texts-link"></div>
+
+        <!-- Texte pokedex affiché -->
+        <div class="row">
+          <div class="col m12 pokedex-text-content"
+            v-if="currentText !=''">
+            <div class="card grey lighten-3">
+              <div class="card-content">
+                <span class="card-title">{{ currentVersion | capitalize }}</span>
+                <p>{{ currentText }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     
@@ -156,6 +202,9 @@ export default {
       pkmnUrl: 'https://pokeapi.co/api/v2/pokemon/',
       pkmnData: null,
       texts: [],
+      showTextsButton: false,
+      currentText: '',
+      currentVersion: '',
       evolutions: {
         base: {
           name: '',
@@ -174,7 +223,19 @@ export default {
       // chargement des données sur le nouveau
       this.recupererDonnes()
     },
+    manageText: function(){
+      this.showTextsButton = !this.showTextsButton
+      if(this.showTextsButton == false)
+        this.currentText = ''
+    },
+    // Met à jour le texte de pokedex courrant et le nom de la version de provenance
+    changeCurrentText: function(text){
+      this.currentText = text.flavor_text
+      this.currentVersion = text.version.name
+    },
     recupererDonnes: function(){
+      // Remise à vide des textes
+      this.texts = []
       // Appel api pour les données du pkmn en cours
       axios
       .get(this.pkmnUrl + this.$route.params.pkmn)
@@ -191,8 +252,12 @@ export default {
             console.log(response.data)
             // Récupération des textes
             response.data.flavor_text_entries.forEach((textData)=>{
-              if(textData.language.name == "en")
+              // On récupère les textes en anglais et les versions qui ne sont pas lets-go...
+              if(textData.language.name == "en" && !textData.version.name.includes("lets-go-"))
+              {
+                textData.flavor_text = textData.flavor_text.replace('\f', ' ')
                 this.texts.push(textData)
+              }  
             })
 
             // Appel api pour les données de chaine d'écolution
@@ -304,7 +369,6 @@ export default {
   // created () {
   mounted () {
     this.recupererDonnes()
-    
   }
 }
 </script>
@@ -327,10 +391,38 @@ a {
 }
 
 div #pkmn-image-container{
-  margin-top: 150px;
+  margin-top: 100px;
 }
 
 div.change-button-content{
   padding-top: 20px;
 }
+
+div.images-texts-link {
+  height: 135px;
+}
+
+/*boutons textes*/
+button.pkmn-text-button {
+  text-shadow: 1px 1px 2px rgb(0 0 0 / 70%);
+}
+
+button.button-red { background-color: #f44336 ; }
+button.button-blue, button.button-soulriver { background-color: #2196f3; }
+button.button-yellow { background-color: #ffeb3b ; }
+button.button-gold, button.button-heartgold { background-color: #ffca28 ; }
+button.button-silver { background-color: #e0e0e0 ; }
+button.button-crystal { background-color: #b2ebf2 ; }
+button.button-ruby, button.button-omega-ruby { background-color: #b71c1c ; }
+button.button-sapphire, button.button-omega-sapphire { background-color: #3f51b5 ; }
+button.button-emerald { background-color: #00e676 ; }
+button.button-firered { background-color: #e53935 ; }
+button.button-leafgreen { background-color: #4caf50 ; }
+button.button-diamond { background-color: #e0e0e0 ; }
+button.button-pearl { background-color: #eeeeee; }
+button.button-platinum { background-color: #efebe9 ; }
+button.button-black, button.button-black-2 { background-color: #000000 ; }
+button.button-white, button.button-white-2 { background-color: #ffffff ; }
+button.button-x { background-color: #1a237e ; }
+button.button-y { background-color: #283593 ; }
 </style>

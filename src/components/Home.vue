@@ -10,9 +10,9 @@
       <div class="col s3 m3" 
         v-for="(pkmn, index) in pkmnData" 
         :key="index+1">
-        <div class="card">
+        <div class="card" v-if="pkmn.picture">
           <router-link :to="'/detail/'+(index+indexChange+1)">
-            <img class="pkmn-picture" 
+            <img class="pkmn-picture"
               :src="pkmn.picture" 
               :alt="pkmn.name">
           </router-link>
