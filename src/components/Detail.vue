@@ -1,6 +1,7 @@
 <template>
-  <div class="home" v-if="pkmnData !=null">
+  <div class="detail" v-if="pkmnData !=null">
 
+    <!-- CONTENANT INFO ET IMAGES -->
     <div class="row">
 
       <!-- COLONNE DE GAUCHE ------------------------------------------------------------>
@@ -56,34 +57,6 @@
             {{ ability.ability.name | capitalize }}
           </div>
         </div>
-
-        <!-- TEXTES DE PKMN -->
-        <div class="row" id="pkmn-texts">
-          <div class="col m-4 offset-m4">
-            <h5>Pokedex texts</h5>
-          </div>
-          <div class="col m4">
-            <a class="btn-floating btn waves-effect waves-light red" 
-                @click="manageText()">
-              <i class="material-icons">add</i>
-            </a>
-          </div>
-          <div class="pkmn-text-container col m10 offset-m1" v-show="showTextsButton" style="margin-top: 40px;">
-            <button class="pkmn-text-button btn waves-effect waves-light "
-              @click="changeCurrentText(text)" 
-              v-for="(text,index) in texts"
-              style="margin: 2px;" 
-              :key="index"
-              :class="'button-' + text.version.name">
-              {{ text.version.name }}
-            </button>
-          </div>
-        </div>
-
-        <!-- ATTAQUES -->
-        <div id="pkmn-attacks">
-          <h5>Attacks :</h5>
-        </div>
       </div>
 
       <!-- COLONNE DE DROITE ------------------------------------------------------------>
@@ -103,8 +76,41 @@
           <img class="pkmn-sprite" :src="pkmnData.sprites.back_shiny" alt="">
         </div>
 
-        <div class="row images-texts-link"></div>
+      </div>
+    </div>
+    <!-- FIN CONTENANT INFO ET IMAGES -->
+    
+    <!-- CONTENANT TEXTES PKDEX -->
+    <div class="row">
+      <!-- COLONNE DE GAUCHE -->
+      <div class="col m6">
+        <!-- TEXTES DE PKMN -->
+        <div class="row" id="pkmn-texts">
+          <div class="col m4 offset-m4">
+            <h5>Pokedex texts</h5>
+          </div>
+          <div class="col m4">
+            <a class="btn-floating btn waves-effect waves-light red text-appear-button left" 
+                @click="manageText()">
+              <i class="material-icons" v-if="!showTextsButton">add</i>
+              <i class="material-icons" v-if="showTextsButton">remove</i>
+            </a>
+          </div>
+          <div class="pkmn-text-container col m10 offset-m1" v-show="showTextsButton" style="margin-top: 40px;">
+            <button class="pkmn-text-button btn waves-effect waves-light "
+              @click="changeCurrentText(text)" 
+              v-for="(text,index) in texts"
+              style="margin: 2px;" 
+              :key="index"
+              :class="'button-' + text.version.name">
+              {{ text.version.name }}
+            </button>
+          </div>
+        </div>
+      </div>
 
+      <!-- COLONNE DE DROITE -->
+      <div class="col m6" style="margin-top: 80px">
         <!-- Texte pokedex affiché -->
         <div class="row">
           <div class="col m12 pokedex-text-content"
@@ -118,9 +124,18 @@
           </div>
         </div>
       </div>
+
     </div>
+    <!-- FIN CONTENANT TEXTES PKDEX -->
     
-    <!------------ EVOLUTIONS ------------>
+    <!-- <div class="row"> -->
+      <!-- ATTAQUES -->
+      <!-- <div id="pkmn-attacks">
+        <h5>Attacks :</h5>
+      </div>
+    </div> -->
+    
+    <!------------ CONTENANT EVOLUTIONS ------------>
     <div class="row">
 
       <h5>Evolutions</h5>
@@ -190,6 +205,8 @@
       </div>
 
     </div>
+    <!------------ FIN CONTENANT EVOLUTIONS ------------>
+
   </div>
 </template>
 
@@ -201,6 +218,7 @@ export default {
     return {
       pkmnUrl: 'https://pokeapi.co/api/v2/pokemon/',
       pkmnData: null,
+      abilities: [],
       texts: [],
       showTextsButton: false,
       currentText: '',
@@ -243,17 +261,42 @@ export default {
         this.pkmnData = response.data
         var speciesUrl = this.pkmnData.species.url
 
+        // Récupération des données pour les habilités
+        // Pour chacune des habilités
+        response.data.abilities.forEach((ability)=>{
+          var newAbility = {}
+          // appel api avec ability.url pour récupérer les données pour chaque ability
+          axios
+          .get(ability.ability.url)
+          .then(response => {
+            
+            newAbility.name = response.data.name
+            newAbility.pokemon = response.data.pokemon
+
+            response.data.effect_entries.forEach((abilityData)=>{
+              // On récupère uniquement les données en anglais
+              if(abilityData.language.name =="en"){
+                newAbility.effect = abilityData.effect
+                newAbility.short_effect = abilityData.short_effect
+              }
+            })
+
+          })
+          this.abilities.push(newAbility)
+        })
+
         // Appel api pour les données d'especes
         axios
           .get(speciesUrl)
           .then(response => {
-            // !!! Voir ici pour les texts en fr !!!
-            console.log("espece : ")
-            console.log(response.data)
-            // Récupération des textes
+            // Récupération des textes pkdex
             response.data.flavor_text_entries.forEach((textData)=>{
-              // On récupère les textes en anglais et les versions qui ne sont pas lets-go...
-              if(textData.language.name == "en" && !textData.version.name.includes("lets-go-"))
+              // On récupère les textes en anglais et les versions qui ne sont pas lets-go, shield et sword...
+              if(textData.language.name == "en" 
+                && !textData.version.name.includes("lets-go-") 
+                && !textData.version.name.includes("sword") 
+                && !textData.version.name.includes("shield")
+              )
               {
                 textData.flavor_text = textData.flavor_text.replace('\f', ' ')
                 this.texts.push(textData)
@@ -397,9 +440,8 @@ div #pkmn-image-container{
 div.change-button-content{
   padding-top: 20px;
 }
-
-div.images-texts-link {
-  height: 135px;
+a.text-appear-button{
+  margin-top: 15px;
 }
 
 /*boutons textes*/
@@ -411,18 +453,21 @@ button.button-red { background-color: #f44336 ; }
 button.button-blue, button.button-soulriver { background-color: #2196f3; }
 button.button-yellow { background-color: #ffeb3b ; }
 button.button-gold, button.button-heartgold { background-color: #ffca28 ; }
-button.button-silver { background-color: #e0e0e0 ; }
+button.button-silver { background-color: #90a4ae ; }
 button.button-crystal { background-color: #b2ebf2 ; }
 button.button-ruby, button.button-omega-ruby { background-color: #b71c1c ; }
 button.button-sapphire, button.button-omega-sapphire { background-color: #3f51b5 ; }
 button.button-emerald { background-color: #00e676 ; }
 button.button-firered { background-color: #e53935 ; }
 button.button-leafgreen { background-color: #4caf50 ; }
-button.button-diamond { background-color: #e0e0e0 ; }
+button.button-diamond { background-color: #9e9e9e ; }
 button.button-pearl { background-color: #eeeeee; }
-button.button-platinum { background-color: #efebe9 ; }
+button.button-platinum { background-color: #757575 ; }
 button.button-black, button.button-black-2 { background-color: #000000 ; }
 button.button-white, button.button-white-2 { background-color: #ffffff ; }
 button.button-x { background-color: #1a237e ; }
 button.button-y { background-color: #283593 ; }
+button.button-sun, button.button-ultra-sun { background-color: #ffff00 ; }
+button.button-moon, button.button-ultra-moon { background-color: #bdbdbd ; }
+
 </style>
