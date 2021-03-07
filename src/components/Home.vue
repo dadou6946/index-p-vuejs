@@ -1,46 +1,59 @@
 <template>
   <div class="home">
 
+    <transition name="fade">
+      <div class="loader-container" v-if=showLoader>
+        <img class="img-loader" 
+          id="loader" 
+          :src="'/loader.png'">
+      </div>
+    </transition>
+
+
     <div class="row">
       <h1>Pokedex</h1>
     </div>
-    
-    <!-- affichage de tuile pour chaque pkmn -->
-    <div class="row">
-      <div class="col s3 m3" 
-        v-for="(pkmn, index) in pkmnData" 
-        :key="index+1">
-        <div class="card" v-if="pkmn.picture">
-          <router-link :to="'/detail/'+(index+indexChange+1)">
-            <img class="pkmn-picture"
-              :src="pkmn.picture" 
-              :alt="pkmn.name">
-          </router-link>
-          <div class="card-action">
-            <router-link :to="'/detail/'+(index+indexChange+1)"
-              class="waves-effect red white-text waves-light btn">
-              {{ pkmn.name | capitalize }}
-            </router-link>
+
+    <transition name="fade">
+      <div v-if="!showLoader">
+        
+        <!-- affichage de tuile pour chaque pkmn -->
+        <div class="row">
+          <div class="col s3 m3" 
+            v-for="(pkmn, index) in pkmnData" 
+            :key="index+1">
+            <div class="card" v-if="pkmn.picture">
+              <router-link :to="'/detail/'+(index+indexChange+1)">
+                <img class="pkmn-picture"
+                  :src="pkmn.picture" 
+                  :alt="pkmn.name">
+              </router-link>
+              <div class="card-action">
+                <router-link :to="'/detail/'+(index+indexChange+1)"
+                  class="waves-effect red white-text waves-light btn">
+                  {{ pkmn.name | capitalize }}
+                </router-link>
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- boutons enregistrements suivants -->
+        <div class="row">
+          <a @click="changeList('previous')" 
+            class="btn red white-text"
+            :disabled="urlPrevious==null">
+            Previous
+          </a>
+          <span class="index-count">{{ idLow }} - {{ idHight }}</span>
+          <a @click="changeList('next')" 
+            class="btn red white-text"
+            :disabled="urlNext==null">
+            Next
+          </a>
+        </div>
       </div>
-    </div>
-
-    <!-- boutons enregistrements suivants -->
-    <div class="row">
-      <a @click="changeList('previous')" 
-        class="btn red white-text"
-        :disabled="urlPrevious==null">
-        Previous
-      </a>
-      <span class="index-count">{{ idLow }} - {{ idHight }}</span>
-      <a @click="changeList('next')" 
-        class="btn red white-text"
-        :disabled="urlNext==null">
-        Next
-      </a>
-    </div>
-
+    </transition>
   </div>
 </template>
 
@@ -52,6 +65,7 @@ export default {
   name: 'Home',
   data () {
     return {
+      showLoader: true,
       urlCurrent: '',
       urlPrevious: null,
       urlNext: null,
@@ -64,6 +78,12 @@ export default {
   methods : {
     // Méthode pour aller sur les enregistrements suivants/précédents
     changeList(type) {
+      // On revient en haut de la page
+      window.scrollTo({
+        top:0,
+        left: 0,
+       behavior: 'smooth'
+      });
       if (type == 'next')
       {
         this.urlCurrent = this.urlNext
@@ -77,6 +97,8 @@ export default {
       axios
       .get(this.urlCurrent)
       .then(response => {
+
+        this.showLoader = true
         // mise a jour des données, url et index
         this.pkmnData = response.data.results
         this.urlPrevious = response.data.previous
@@ -86,6 +108,8 @@ export default {
         // recherche des photo avec les nouveaux enregistrements
         this.getPictures()
       })
+      // Affichage du loader 
+      setTimeout(function () { this.showLoader=false }.bind(this), 1000)
     },
     // Recherche des photos pour chaque enregistrement de pkmn dans pkmndata
     getPictures() {
@@ -112,6 +136,8 @@ export default {
         // Recherche des photos
         this.getPictures()
       })
+    setTimeout(function () { this.showLoader=false }.bind(this), 1000)
+
   }
 }
 </script>
@@ -143,5 +169,21 @@ img.pkmn-picture {
 /*compte en bas des listes*/
 span.index-count {
   margin: 15px;
+}
+
+/*loader*/
+div.home {
+  position: relative;
+}
+div.loader-container {
+  position: absolute;
+  width: 100%;
+}
+img.img-loader {
+  z-index: 10;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 100px;
 }
 </style>

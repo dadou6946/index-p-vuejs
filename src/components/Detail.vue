@@ -1,212 +1,257 @@
 <template>
-  <div class="detail" v-if="pkmnData !=null">
+  <div>
+    <transition name="fade">
+      <div id="loader-container" v-if=showLoader>
+        <img class="img-loader" id="loader" :src="'/loader.png'">
+      </div> 
+    </transition>
 
-    <!-- CONTENANT INFO ET IMAGES -->
-    <div class="row">
+    <transition name="fade">
+      <div class="detail" v-if="!showLoader">
 
-      <!-- COLONNE DE GAUCHE ------------------------------------------------------------>
-      <div class="col m6">
-
-        <!-- BOUTONS ET IDENTIFIANTS -->
+        <!-- CONTENANT INFO ET IMAGES -->
         <div class="row">
-          <div class="col m4 change-button-content">
-            <button class="waves-effect waves-light btn-floating red"
-              :disabled="pkmnData.id==1"
-              @click="redirection(pkmnData.id -1)">
-              <i class="material-icons">keyboard_arrow_left</i>
-            </button>
+
+          <!-- COLONNE DE GAUCHE ------------------------------------------------------------>
+          <div class="col m6">
+
+            <!-- BOUTONS ET IDENTIFIANTS -->
+            <div class="row">
+              <div class="col m4 change-button-content">
+                <button class="waves-effect waves-light btn-floating red"
+                  :disabled="pkmnData.id==1"
+                  @click="redirection(pkmnData.id -1)">
+                  <i class="material-icons">keyboard_arrow_left</i>
+                </button>
+              </div>
+              <div class="col m4">
+                <h4 id="pkmn-id">#{{ pkmnData.id }}</h4>
+              </div>
+              <div class="col m4 change-button-content">
+                <button class="waves-effect waves-light btn-floating red"
+                  :disabled="pkmnData.id==898"
+                  @click="redirection(pkmnData.id + 1)">
+                  <i class="material-icons">keyboard_arrow_right</i>
+                </button>
+              </div>
+            </div>
+
+            <!-- NOM ET DIMENSIONS -->
+            <div class="row">
+              <h3 id="pkmn-name">{{ pkmnData.name | capitalize }}</h3>
+              <div class="col m12 dimensions-content">
+                <p id="pkmn-height">Height : {{ pkmnData.height*10 }} cm</p>
+                <p id="pkmn-weight">Weight : {{ pkmnData.weight*0.1 }} kg</p>
+              </div>
+            </div>
+
+            <!-- TYPES -->
+            <div class="row" id="pkmn-types">
+              <h5>Type<span v-if="pkmnData.types.length==2">s</span> :</h5>
+              <div v-for="type in pkmnData.types"
+                :key="type.slot"
+                class="type-icon" 
+                :class="'type-'+type.type.name">
+                {{ type.type.name | capitalize }}
+              </div>
+            </div>        
+            
           </div>
-          <div class="col m4">
-            <h4 id="pkmn-id">#{{ pkmnData.id }}</h4>
-          </div>
-          <div class="col m4 change-button-content">
-            <button class="waves-effect waves-light btn-floating red"
-              :disabled="pkmnData.id==898"
-              @click="redirection(pkmnData.id + 1)">
-              <i class="material-icons">keyboard_arrow_right</i>
-            </button>
+
+          <!-- COLONNE DE DROITE ------------------------------------------------------------>
+          <div class="col m6">
+            
+            <!-- PHOTOS -->
+            <div class="row" id="pkmn-image-container">
+              <img class="pkmn-image" :src="pkmnData.sprites.other['official-artwork'].front_default"
+                style="height: 150px;" alt="">
+              <img class="pkmn-image" :src="pkmnData.sprites.other['dream_world'].front_default"
+                style="height: 150px;" alt="">
+            </div>
+            <div class="row" id="pkmn-sprite-container">
+              <img class="pkmn-sprite" :src="pkmnData.sprites.back_default" alt="">
+              <img class="pkmn-sprite" :src="pkmnData.sprites.front_default" alt="">
+              <img class="pkmn-sprite" :src="pkmnData.sprites.front_shiny" alt="">
+              <img class="pkmn-sprite" :src="pkmnData.sprites.back_shiny" alt="">
+            </div>
           </div>
         </div>
-
-        <!-- NOM ET DIMENSIONS -->
-        <div class="row">
-          <h3 id="pkmn-name">{{ pkmnData.name | capitalize }}</h3>
-          <p id="pkmn-height">Height : {{ pkmnData.height*10 }} cm</p>
-          <p id="pkmn-weight">Weight : {{ pkmnData.weight*0.1 }} kg</p>
-        </div>
-
-        <!-- TYPES -->
-        <div class="row" id="pkmn-types">
-          <h5>Type<span v-if="pkmnData.types.length==2">s</span> :</h5>
-          <div v-for="type in pkmnData.types"
-            :key="type.slot"
-            class="type-icon" 
-            :class="'type-'+type.type.name">
-            {{ type.type.name | capitalize }}
-          </div>
-        </div>
-
-        <!-- CAPACITES -->
-        <div class="row" id="pkmn-abilities">
-          <h5>
-            <span v-if="pkmnData.abilities.length==1">Ability</span>
-            <span v-if="pkmnData.abilities.length!=1">Abilities</span> :
-          </h5>
-          <div v-for="(ability, index) in pkmnData.abilities" 
-            :key="index">
-            {{ ability.ability.name | capitalize }}
-          </div>
-        </div>
-      </div>
-
-      <!-- COLONNE DE DROITE ------------------------------------------------------------>
-      <div class="col m6">
+        <!-- FIN CONTENANT INFO ET IMAGES -->
         
-        <!-- PHOTOS -->
-        <div class="row" id="pkmn-image-container">
-          <img class="pkmn-image" :src="pkmnData.sprites.other['official-artwork'].front_default"
-            style="height: 150px;" alt="">
-          <img class="pkmn-image" :src="pkmnData.sprites.other['dream_world'].front_default"
-            style="height: 150px;" alt="">
-        </div>
-        <div class="row" id="pkmn-sprite-container">
-          <img class="pkmn-sprite" :src="pkmnData.sprites.back_default" alt="">
-          <img class="pkmn-sprite" :src="pkmnData.sprites.front_default" alt="">
-          <img class="pkmn-sprite" :src="pkmnData.sprites.front_shiny" alt="">
-          <img class="pkmn-sprite" :src="pkmnData.sprites.back_shiny" alt="">
-        </div>
-
-      </div>
-    </div>
-    <!-- FIN CONTENANT INFO ET IMAGES -->
-    
-    <!-- CONTENANT TEXTES PKDEX -->
-    <div class="row">
-      <!-- COLONNE DE GAUCHE -->
-      <div class="col m6">
-        <!-- TEXTES DE PKMN -->
-        <div class="row" id="pkmn-texts">
-          <div class="col m4 offset-m4">
-            <h5>Pokedex texts</h5>
-          </div>
-          <div class="col m4">
-            <a class="btn-floating btn waves-effect waves-light red text-appear-button left" 
-                @click="manageText()">
-              <i class="material-icons" v-if="!showTextsButton">add</i>
-              <i class="material-icons" v-if="showTextsButton">remove</i>
-            </a>
-          </div>
-          <div class="pkmn-text-container col m10 offset-m1" v-show="showTextsButton" style="margin-top: 40px;">
-            <button class="pkmn-text-button btn waves-effect waves-light "
-              @click="changeCurrentText(text)" 
-              v-for="(text,index) in texts"
-              style="margin: 2px;" 
-              :key="index"
-              :class="'button-' + text.version.name">
-              {{ text.version.name }}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- COLONNE DE DROITE -->
-      <div class="col m6" style="margin-top: 80px">
-        <!-- Texte pokedex affiché -->
-        <div class="row">
-          <div class="col m12 pokedex-text-content"
-            v-if="currentText !=''">
-            <div class="card grey lighten-3">
-              <div class="card-content">
-                <span class="card-title">{{ currentVersion | capitalize }}</span>
-                <p>{{ currentText }}</p>
+        <!-- CONTENANT CAPACITES -->
+        <div class="row capacities-content">
+          <!-- BOUTONS AVEC NOMS -->
+          <div class="col m6">
+            <!-- CAPACITES -->
+            <div class="row" id="pkmn-abilities">
+              <div class="col m12">
+                <h5>
+                  <span v-if="pkmnData.abilities.length==1">Ability</span>
+                  <span v-if="pkmnData.abilities.length!=1">Abilities</span> :
+                </h5>
+                <p class="ability-explanations-text">Click on an ability for more details.</p>
+                <div class="ability-button-content">
+                  <button class="btn-small waves-effect waves-light"
+                    :class="'type-'+pkmnData.types[0].type.name"
+                    v-for="(ability, index) in abilities" 
+                    :key="index"
+                    @click="showAbility(ability.name, ability.effect)">
+                    {{ ability.name | capitalize }}
+                  </button>              
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-    </div>
-    <!-- FIN CONTENANT TEXTES PKDEX -->
-    
-    <!-- <div class="row"> -->
-      <!-- ATTAQUES -->
-      <!-- <div id="pkmn-attacks">
-        <h5>Attacks :</h5>
-      </div>
-    </div> -->
-    
-    <!------------ CONTENANT EVOLUTIONS ------------>
-    <div class="row">
-
-      <h5>Evolutions</h5>
-      
-      <!------------ Base ------------>
-      <div class="row" v-if="evolutions.base.image != ''">
-        <div class="col m4 pkmn-base">
-          <div class="card teal lighten-5">
-            <div class="card-content white-text">
-              <img v-bind:src="evolutions.base.image"
-                style="height: 70px;" 
-                alt="">
-            </div>
-            <div class="card-action">
-              <button class="btn red" @click="redirection(evolutions.base.name)">{{ evolutions.base.name | capitalize }}</button>
+          <!-- AFFICHAGE DU DETAIL DES CAPACITES -->
+          <div class="col m6">
+            <div class="row">
+              <transition name="fade">
+              <div class="col m12 ability-text-content" v-if=showAbilityText>
+                <div class="card grey lighten-3">
+                  <div class="card-content">
+                    <span class="card-title">{{ abilityTitle | capitalize }}</span>
+                    <p>{{ abilityText }}</p>
+                  </div>
+                </div>
+              </div>
+              </transition>
             </div>
           </div>
         </div>
-      </div>
+        <!-- FIN CONTENANT CAPACITES -->
 
-      <!------------ EVOLUTIONS 1 ------------>
-      <div class="row" v-if="evolutions.evolutions1.length !=0">
-        <div class="col m4 pkmn-evolution-1" v-for="(evo1, index) in evolutions.evolutions1" :key="index">
-          <div class="card teal lighten-4">
-            <div class="card-content white-text">
-              <img v-if="evo1.image != ''" :src="evo1.image"
-                style="height: 70px;" 
-                alt="">
-              <p>Trigger : {{ evo1.trigger }}</p>
-              <p v-if="evo1.min_level != null">Level : {{ evo1.min_level }}</p>
-              <p v-if="evo1.item != null">Item : {{ evo1.item }}</p>
-              <p v-if="evo1.min_happiness != null">Min happiness : {{ evo1.min_happiness }}</p>
-              <p v-if="evo1.time_of_day != null">Time of the day : {{ evo1.time_of_day }}</p>
-              <p v-if="evo1.min_affection != null">Min affection : {{ evo1.min_affection }}</p>
-              <p v-if="evo1.known_move_type != null">Known move Type : {{ evo1.known_move_type }}</p>
-              <p v-if="evo1.held_item != null">Held item : {{ evo1.held_item }}</p>
-            </div>
-            <div class="card-action">
-              <button class="btn red" @click="redirection(evo1.name)">{{ evo1.name | capitalize }}</button>
-            </div>
-          </div>
-        </div>
-      </div>  
-
-      <!------------ EVOLUTIONS 2 ------------>
-      <div class="row" v-if="evolutions.evolutions2.length !=0">
-        <div class="col m4 pkmn-evolution-2" v-for="(evo2, index) in evolutions.evolutions2" :key="index">
-          <div class="card teal lighten-3">
-            <div class="card-content white-text">
-              <img v-if="evo2.image != ''" :src="evo2.image"
-                style="height: 70px;" 
-                alt="">
-              <p>Trigger : {{ evo2.trigger }}</p>
-              <p v-if="evo2.min_level != null">Level : {{ evo2.min_level }}</p>
-              <p v-if="evo2.item != null">Item : {{ evo2.item }}</p>
-              <p v-if="evo2.min_happiness != null">Min happiness : {{ evo2.min_happiness }}</p>
-              <p v-if="evo2.time_of_day != null">Time of the day : {{ evo2.time_of_day }}</p>
-              <p v-if="evo2.min_affection != null">Min affection : {{ evo2.min_affection }}</p>
-              <p v-if="evo2.known_move_type != null">Known move Type : {{ evo2.known_move_type }}</p>
-              <p v-if="evo2.held_item != null">Held item : {{ evo2.held_item }}</p>
-            </div>
-            <div class="card-action">
-              <button class="btn red" @click="redirection(evo2.name)">{{ evo2.name | capitalize }}</button>
+        <!-- CONTENANT TEXTES PKDEX -->
+        <div class="row">
+          <!-- COLONNE DE GAUCHE -->
+          <div class="col m6">
+            <!-- TEXTES DE PKMN -->
+            <div class="row" id="pkmn-texts">
+              <div class="col m4 offset-m4">
+                <h5>Pokedex texts</h5>
+                <p  v-show="showTextsButton">Click on a version to show details.</p>
+              </div>
+              <div class="col m4">
+                <a class="btn-floating btn waves-effect waves-light red text-appear-button left" 
+                    @click="manageText()">
+                  <i class="material-icons" v-if="!showTextsButton">add</i>
+                  <i class="material-icons" v-if="showTextsButton">remove</i>
+                </a>
+              </div>
+              <div class="pkmn-text-container col m10 offset-m1" v-show="showTextsButton" style="margin-top: 40px;">
+                <button class="pkmn-text-button btn-small waves-effect waves-light "
+                  @click="changeCurrentText(text)" 
+                  v-for="(text,index) in texts"
+                  style="margin: 2px;" 
+                  :key="index"
+                  :class="'button-' + text.version.name">
+                  {{ text.version.name }}
+                </button>
+              </div>
             </div>
           </div>
+
+          <!-- COLONNE DE DROITE -->
+          <div class="col m6" style="margin-top: 150px">
+            <!-- Texte pokedex affiché -->
+            <div class="row">
+              <transition name="fade">
+                <div class="col m12 pokedex-text-content"
+                  v-if="currentText !=''">
+                  <div class="card grey lighten-3">
+                    <div class="card-content">
+                      <span class="card-title">{{ currentVersion | capitalize }}</span>
+                      <p>{{ currentText }}</p>
+                    </div>
+                  </div>
+                </div>
+              </transition>
+            </div>
+          </div>
+
         </div>
+        <!-- FIN CONTENANT TEXTES PKDEX -->
+        
+        <!-- <div class="row"> -->
+          <!-- ATTAQUES -->
+          <!-- <div id="pkmn-attacks">
+            <h5>Attacks :</h5>
+          </div>
+        </div> -->
+        
+        <!------------ CONTENANT EVOLUTIONS ------------>
+        <div class="row">
+
+          <h5>Evolutions</h5>
+          
+          <!------------ Base ------------>
+          <div class="row" v-if="evolutions.base.image != ''">
+            <div class="col m4 pkmn-base">
+              <div class="card teal lighten-5">
+                <div class="card-content white-text">
+                  <img v-bind:src="evolutions.base.image"
+                    style="height: 70px;" 
+                    alt="">
+                </div>
+                <div class="card-action">
+                  <button class="btn red" @click="redirection(evolutions.base.name)">{{ evolutions.base.name | capitalize }}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!------------ EVOLUTIONS 1 ------------>
+          <div class="row" v-if="evolutions.evolutions1.length !=0">
+            <div class="col m4 pkmn-evolution-1" v-for="(evo1, index) in evolutions.evolutions1" :key="index">
+              <div class="card teal lighten-4">
+                <div class="card-content white-text">
+                  <img v-if="evo1.image != ''" :src="evo1.image"
+                    style="height: 70px;" 
+                    alt="">
+                  <p>Trigger : {{ evo1.trigger }}</p>
+                  <p v-if="evo1.min_level != null">Level : {{ evo1.min_level }}</p>
+                  <p v-if="evo1.item != null">Item : {{ evo1.item }}</p>
+                  <p v-if="evo1.min_happiness != null">Min happiness : {{ evo1.min_happiness }}</p>
+                  <p v-if="evo1.time_of_day != null">Time of the day : {{ evo1.time_of_day }}</p>
+                  <p v-if="evo1.min_affection != null">Min affection : {{ evo1.min_affection }}</p>
+                  <p v-if="evo1.known_move_type != null">Known move Type : {{ evo1.known_move_type }}</p>
+                  <p v-if="evo1.held_item != null">Held item : {{ evo1.held_item }}</p>
+                </div>
+                <div class="card-action">
+                  <button class="btn red" @click="redirection(evo1.name)">{{ evo1.name | capitalize }}</button>
+                </div>
+              </div>
+            </div>
+          </div>  
+
+          <!------------ EVOLUTIONS 2 ------------>
+          <div class="row" v-if="evolutions.evolutions2.length !=0">
+            <div class="col m4 pkmn-evolution-2" v-for="(evo2, index) in evolutions.evolutions2" :key="index">
+              <div class="card teal lighten-3">
+                <div class="card-content white-text">
+                  <img v-if="evo2.image != ''" :src="evo2.image"
+                    style="height: 70px;" 
+                    alt="">
+                  <p>Trigger : {{ evo2.trigger }}</p>
+                  <p v-if="evo2.min_level != null">Level : {{ evo2.min_level }}</p>
+                  <p v-if="evo2.item != null">Item : {{ evo2.item }}</p>
+                  <p v-if="evo2.min_happiness != null">Min happiness : {{ evo2.min_happiness }}</p>
+                  <p v-if="evo2.time_of_day != null">Time of the day : {{ evo2.time_of_day }}</p>
+                  <p v-if="evo2.min_affection != null">Min affection : {{ evo2.min_affection }}</p>
+                  <p v-if="evo2.known_move_type != null">Known move Type : {{ evo2.known_move_type }}</p>
+                  <p v-if="evo2.held_item != null">Held item : {{ evo2.held_item }}</p>
+                </div>
+                <div class="card-action">
+                  <button class="btn red" @click="redirection(evo2.name)">{{ evo2.name | capitalize }}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!------------ FIN CONTENANT EVOLUTIONS ------------>
       </div>
-
-    </div>
-    <!------------ FIN CONTENANT EVOLUTIONS ------------>
-
+    </transition>
   </div>
 </template>
 
@@ -216,9 +261,13 @@ export default {
   name: 'Detail',
   data () {
     return {
+      showLoader: true,
       pkmnUrl: 'https://pokeapi.co/api/v2/pokemon/',
       pkmnData: null,
       abilities: [],
+      showAbilityText: false,
+      abilityTitle: '',
+      abilityText: '',
       texts: [],
       showTextsButton: false,
       currentText: '',
@@ -238,18 +287,63 @@ export default {
     redirection: function(pkmn){
       // redirection
       this.$router.push({ name: 'Detail', params: { pkmn: pkmn } })
-      // chargement des données sur le nouveau
+      // Reset et chargement des données sur le nouveau
+      this.resetData()
       this.recupererDonnes()
     },
+    // Affiche le texte correspondant à la capacité dans la zone de texte dédié au clique sur le bouton de la capacité
+    showAbility: function(ability, effect){
+      if(this.showAbilityText == false)
+      {
+        this.abilityTitle = ability
+        this.abilityText = effect
+        this.showAbilityText = true
+      }
+      else
+      {
+        if(this.abilityTitle == ability)
+        {
+          this.showAbilityText = false
+          this.abilityTitle = ''
+          this.abilityText = ''
+        }
+        else
+        {
+          this.abilityTitle = ability
+          this.abilityText = effect
+        }
+      }
+    },
+    // Gère l'affiche du texte de pkdex en appuyant sur le bouton + / -
     manageText: function(){
       this.showTextsButton = !this.showTextsButton
       if(this.showTextsButton == false)
         this.currentText = ''
     },
-    // Met à jour le texte de pokedex courrant et le nom de la version de provenance
+    // Met à jour le texte de pokedex courant et le nom de la version de provenance
     changeCurrentText: function(text){
       this.currentText = text.flavor_text
       this.currentVersion = text.version.name
+    },
+    resetData: function(){
+      this.showLoader = true,
+      this.pkmnData = null,
+      this.abilities = [],
+      this.showAbilityText = false,
+      this.abilityTitle = '',
+      this.abilityText = '',
+      this.texts = [],
+      this.showTextsButton = false,
+      this.currentText = '',
+      this.currentVersion = '',
+      this.evolutions = {
+        base: {
+          name: '',
+          image: ''
+        },
+        evolutions1: [],
+        evolutions2: []
+      }
     },
     recupererDonnes: function(){
       // Remise à vide des textes
@@ -407,6 +501,7 @@ export default {
           })
         })
       })
+      setTimeout(function () { this.showLoader = false;  }.bind(this), 500)
     }
   },
   // created () {
@@ -434,7 +529,11 @@ a {
 }
 
 div #pkmn-image-container{
-  margin-top: 100px;
+  margin-top: 70px;
+}
+
+div.dimensions-content {
+  margin-top: 15px;
 }
 
 div.change-button-content{
@@ -470,4 +569,33 @@ button.button-y { background-color: #283593 ; }
 button.button-sun, button.button-ultra-sun { background-color: #ffff00 ; }
 button.button-moon, button.button-ultra-moon { background-color: #bdbdbd ; }
 
+/*Capacités*/
+div.ability-button-content {
+  margin-top: 20px;
+}
+
+div.capacities-content {
+  height: 215px
+}
+div.ability-text-content {
+  margin-top: 50px;
+}
+
+
+/*Loader*/
+#loader {
+  margin-top: 100px;
+}
+div#loader-container{
+  height: 800px;
+  width: 100%;
+}
+
+/*Animations*/
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
 </style>

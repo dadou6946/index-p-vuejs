@@ -165,4 +165,16 @@ div.type-icon {
     text-shadow: 1px 1px 2px rgb(0 0 0 / 70%);
     text-transform: uppercase;
 }
+
+#loader {
+  -webkit-animation: rotation 2s infinite linear;
+}
+@-webkit-keyframes rotation {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(359deg);
+    }
+}
 </style>
