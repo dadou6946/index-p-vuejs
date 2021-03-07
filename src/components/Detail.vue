@@ -183,31 +183,33 @@
         <div class="row">
 
           <h5>Evolutions</h5>
-          
-          <!------------ Base ------------>
-          <div class="row" v-if="evolutions.base.image != ''">
-            <div class="col m4 pkmn-base">
-              <div class="card teal lighten-5">
+          <div class="row">
+
+            <!------------ Base ------------>
+            <div class="col m4 pkmn-base" v-if="evolutions.base.image != ''">
+              <div class="pkmn-card card lighten-5" :class="'type-'+pkmnData.types[0].type.name">
                 <div class="card-content white-text">
                   <img v-bind:src="evolutions.base.image"
                     style="height: 70px;" 
                     alt="">
+                  <p>Basic pokemon</p>
                 </div>
                 <div class="card-action">
                   <button class="btn red" @click="redirection(evolutions.base.name)">{{ evolutions.base.name | capitalize }}</button>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!------------ EVOLUTIONS 1 ------------>
-          <div class="row" v-if="evolutions.evolutions1.length !=0">
-            <div class="col m4 pkmn-evolution-1" v-for="(evo1, index) in evolutions.evolutions1" :key="index">
-              <div class="card teal lighten-4">
+            <!------------ EVOLUTIONS 1 ------------>
+            <div class="col m4 pkmn-evolution-1 pkmn-card" 
+              v-for="(evo1, index) in evolutions.evolutions1" 
+              :key="index">
+              <div class="pkmn-card card" :class="'type-'+pkmnData.types[0].type.name">
                 <div class="card-content white-text">
                   <img v-if="evo1.image != ''" :src="evo1.image"
                     style="height: 70px;" 
                     alt="">
+                  <p>Evolution 1</p>
                   <p>Trigger : {{ evo1.trigger }}</p>
                   <p v-if="evo1.min_level != null">Level : {{ evo1.min_level }}</p>
                   <p v-if="evo1.item != null">Item : {{ evo1.item }}</p>
@@ -222,16 +224,15 @@
                 </div>
               </div>
             </div>
-          </div>  
 
-          <!------------ EVOLUTIONS 2 ------------>
-          <div class="row" v-if="evolutions.evolutions2.length !=0">
-            <div class="col m4 pkmn-evolution-2" v-for="(evo2, index) in evolutions.evolutions2" :key="index">
-              <div class="card teal lighten-3">
+            <!------------ EVOLUTIONS 2 ------------>
+            <div class="col m4 pkmn-evolution-2 pkmn-card" v-for="(evo2, index) in evolutions.evolutions2" :key="index">
+              <div class="pkmn-card card" :class="'type-'+pkmnData.types[0].type.name">
                 <div class="card-content white-text">
                   <img v-if="evo2.image != ''" :src="evo2.image"
                     style="height: 70px;" 
                     alt="">
+                  <p>Evolution 2</p>
                   <p>Trigger : {{ evo2.trigger }}</p>
                   <p v-if="evo2.min_level != null">Level : {{ evo2.min_level }}</p>
                   <p v-if="evo2.item != null">Item : {{ evo2.item }}</p>
@@ -246,6 +247,7 @@
                 </div>
               </div>
             </div>
+
           </div>
 
         </div>
@@ -598,4 +600,18 @@ div#loader-container{
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
+
+/*couleurs Evolutions */
+div.pkmn-card  {
+  height: 260px;
+}
+
+div.pkmn-base {
+  filter: brightness(125%);
+}
+
+div.pkmn-evolution-1 {
+  filter: brightness(112%);
+}
+
 </style>
