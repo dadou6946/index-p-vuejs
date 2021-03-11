@@ -607,11 +607,27 @@ div.pkmn-card  {
 }
 
 div.pkmn-base {
-  filter: brightness(125%);
+  filter: brightness(140%);
 }
 
 div.pkmn-evolution-1 {
-  filter: brightness(112%);
+  filter: brightness(120%);
+}
+
+/*Types*/
+div.type-icon {
+    display: inline-block;
+    width: 66px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.2);
+    color: #fff;
+    font-size: 10px;
+    font-weight: normal;
+    line-height: 1.5rem;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgb(0 0 0 / 70%);
+    text-transform: uppercase;
 }
 
 </style>

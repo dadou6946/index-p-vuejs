@@ -19,7 +19,7 @@
         
         <!-- affichage de tuile pour chaque pkmn -->
         <div class="row">
-          <div class="col s3 m3" 
+          <div class="col s3 m2" 
             v-for="(pkmn, index) in pkmnData" 
             :key="index+1">
             <div class="card" v-if="pkmn.picture">
@@ -28,6 +28,14 @@
                   :src="pkmn.picture" 
                   :alt="pkmn.name">
               </router-link>
+              <div>
+                <span v-for="type in pkmn.types"
+                  :key="type.name"
+                  class="type-icon" 
+                  :class="'type-'+type.name">
+                  {{ type.name | capitalize }}
+                </span>
+              </div>
               <div class="card-action">
                 <router-link :to="'/detail/'+(index+indexChange+1)"
                   class="waves-effect red white-text waves-light btn">
@@ -117,7 +125,13 @@ export default {
         axios
           .get(pkmnd.url)
           .then(response => {
+            console.log(response.data)
             this.$set(this.pkmnData[index], 'picture', response.data.sprites.front_default)
+            var types = []
+            response.data.types.forEach((typeData) => {
+              types.push(typeData.type)
+            })
+            this.$set(this.pkmnData[index], 'types', types)
           })
       })
     }
@@ -185,5 +199,21 @@ img.img-loader {
   margin-left: auto;
   margin-right: auto;
   margin-top: 100px;
+}
+
+span.type-icon {
+    display: inline-block;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.2);
+    color: #fff;
+    font-size: 8px;
+    font-weight: normal;
+    line-height: 1.5rem;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgb(0 0 0 / 70%);
+    text-transform: uppercase;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 </style>

@@ -1,19 +1,51 @@
 <template>
   <div id="app">
 
-    <!-- Header -->
+    <!-- Headers -->
     <div class="container-fluid">
-      <nav class="red">
+      <nav class="red" v-bind:class="showExtendedHeader">
+
         <div class="nav-wrapper">
-          <router-link to="/" class="brand-logo right">lien de droite</router-link>
           <ul class="left hide-on-med-and-down">
             <li><router-link to="/"><img class="img-logo" :src="'/pokeball.png'"></router-link></li>
-            <li><router-link to="/"><span>Home</span></router-link></li>
-            <li><router-link to="">lien</router-link></li>
-            <li class="active"><router-link to="">lien2</router-link></li>
+            <li v-bind:class="{ 'active' : showMenuGen}"><a @click="showMenu('generations')">Generations</a></li>
+            <li v-bind:class="{ 'active' : showMenuTypes}"><a @click="showMenu('types')">By type</a></li>
           </ul>
         </div>
+
+        <transition name="fade">
+          <div class="nav-content" v-show="getVisibilty">
+            <ul class="tabs tabs-transparent" v-show="showMenuGen">
+              <li class="tab"><a class="active" href="#test1">Kanto</a></li>
+              <li class="tab"><a>Johto</a></li>
+              <li class="tab"><a>Hoenn</a></li>
+              <li class="tab"><a>Sinnoh</a></li>
+              <li class="tab"><a>Unova</a></li>
+              <li class="tab"><a>Kalos</a></li>
+              <li class="tab"><a>Alola</a></li>
+              <li class="tab"><a>Galar</a></li>
+            </ul>
+            <ul class="tabs tabs-transparent" v-show="showMenuTypes">
+              <li class="tab"><a>Normal</a></li>
+              <li class="tab"><a>Grass</a></li>
+              <li class="tab"><a>Fire</a></li>
+              <li class="tab"><a>Water</a></li>
+              <li class="tab"><a>Electric</a></li>
+            </ul>
+          </div>
+        </transition>
+
       </nav>
+      <!-- header mobile -->
+      <!-- <ul class="sidenav" id="mobile-demo">
+        <li><a href="sass.html">Sass</a></li>
+        <li><a href="badges.html">Components</a></li>
+        <li><a href="collapsible.html">JavaScript</a></li>
+      </ul>
+      <div id="test1" class="col s12">Test 1</div>
+      <div id="test2" class="col s12">Test 2</div>
+      <div id="test3" class="col s12">Test 3</div>
+      <div id="test4" class="col s12">Test 4</div> -->
     </div>
 
     <!-- contenu -->
@@ -53,6 +85,49 @@
 
   </div>
 </template>
+
+<script>
+
+export default {
+  name: 'app',
+  data () {
+    return {
+      showMenuGen: false,
+      showMenuTypes: false,
+    }
+  },
+  computed: {
+    showExtendedHeader(){
+      if(this.showMenuTypes == true || this.showMenuGen == true)
+        return 'nav-extended'
+      else
+        return ''
+    },
+    getVisibilty(){
+      if(this.showMenuTypes == true)
+        return true
+      if( this.showMenuGen == true)
+        return true
+      return false
+    },
+  },
+  methods : {
+    // Méthode pour afficher les menus
+    showMenu(type){
+      if(type == 'types')
+      {
+        this.showMenuGen = false
+        this.showMenuTypes = !this.showMenuTypes
+      }
+      else if(type == 'generations')
+      {
+        this.showMenuTypes = false
+        this.showMenuGen = !this.showMenuGen
+      }
+    },
+  }
+}
+</script>
 
 <style>
 #app {
@@ -96,75 +171,24 @@ div.main-application-container {
 }
 
 /*classes de couleurs - types*/
-.type-normal {
-    background-color: #aa9;
-}
-.type-fire {
-    background-color: #f42;
-}
-.type-water {
-    background-color: #39f;
-}
-.type-electric {
-    background-color: #fc3;
-}
-.type-grass {
-    background-color: #7c5;
-}
-.type-ice {
-    background-color: #6cf;
-}
-.type-fighting {
-    background-color: #b54;
-}
-.type-poison {
-    background-color: #a59;
-}
-.type-ground {
-    background-color: #db5;
-}
-.type-flying {
-    background-color: #89f;
-}
-.type-psychic {
-    background-color: #f59;
-}
-.type-bug {
-    background-color: #ab2;
-}
-.type-rock {
-    background-color: #ba6;
-}
-.type-ghost {
-    background-color: #66b;
-}
-.type-dragon {
-    background-color: #76e;
-}
-.type-dark {
-    background-color: #754;
-}
-.type-steel {
-    background-color: #aab;
-}
-.type-fairy {
-    background-color: #e9e;
-}
-
-div.type-icon {
-    display: inline-block;
-    width: 66px;
-    margin-bottom: 4px;
-    border-radius: 4px;
-    border: 1px solid rgba(0,0,0,0.2);
-    color: #fff;
-    font-size: 10px;
-    font-weight: normal;
-    line-height: 1.5rem;
-    text-align: center;
-    text-shadow: 1px 1px 2px rgb(0 0 0 / 70%);
-    text-transform: uppercase;
-}
+.type-normal { background-color: #aa9; }
+.type-fire { background-color: #f42; }
+.type-water { background-color: #39f; }
+.type-electric { background-color: #fc3; }
+.type-grass { background-color: #7c5; }
+.type-ice { background-color: #6cf; }/**/
+.type-fighting { background-color: #b54; }
+.type-poison { background-color: #a59; }
+.type-ground { background-color: #db5; }/**/
+.type-flying { background-color: #89f; }
+.type-psychic { background-color: #f59; }
+.type-bug { background-color: #ab2; }
+.type-rock { background-color: #ba6; }/**/
+.type-ghost { background-color: #66b; }/**/
+.type-dragon { background-color: #76e; }
+.type-dark { background-color: #754; }/**/
+.type-steel { background-color: #aab; }/**/
+.type-fairy { background-color: #e9e; }
 
 #loader {
   -webkit-animation: rotation 2s infinite linear;
@@ -176,5 +200,13 @@ div.type-icon {
     to {
         -webkit-transform: rotate(359deg);
     }
+}
+
+/*Animations*/
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
